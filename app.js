@@ -23,20 +23,18 @@ app.use(function (req, res, next) {
 });
 
 
-// GET FROM PHP COMPANY AND KEYWORD <<<<<<-------------
-        axios.get('https://press-cliping.herokuapp.com/api/companies?api_key=23')
-          .then(async response => {
-            if (response.data.success == true) {
-              let today = new Date();
-              let datestring = today.getDate().toString() + "-" + (today.getMonth() + 1) + "-" + today.getFullYear()
-              let companies = response.data.company
-              companies.map(company => {
-                let keywords = []
-                company.keywords.map(word => keywords.push(word.name))
-                extractPDF.extractPDF(keywords, company.name, datestring, company.id)
+// GET FROM COMANDLINE COMPANY,ID AND KEYWORD <<<<<<-------------
+
+          let today = new Date();
+          let datestring = today.getDate().toString() + "-" + (today.getMonth() + 1) + "-" + today.getFullYear()
+          let args = process.argv.slice(2)
+          let company = args[3]  
+          let id = args[4]
+          let keywords= args.slice(5, process.argv.length)
+          extractPDF.extractPDF(keywords, company, datestring, id)
 
 //WHEN EXTRACT HTML AFTER 4s WE START TO SEND HTML MERGED BACK TO PHP ------->>>>>>
-        setTimeout(function () {
+        var test = setInterval(function () {
           let htmlSingleArr = []
           let singleHTMLSource = path.join(__dirname, '/public/javascripts/modified')
           fs.readdirSync(singleHTMLSource).forEach(file => {
@@ -44,7 +42,7 @@ app.use(function (req, res, next) {
             htmlSingleArr.push({
               single_page_src: file,
             })
-
+ 
             Promise.all(htmlSingleArr).then(
               data =>
                 axios({
@@ -56,22 +54,18 @@ app.use(function (req, res, next) {
                   }
                 })
                 .then(function (response) {
-                    console.log(data);
                     console.log("HTML was Send!!!");
+                    if(data.length > 0){
+                      clearInterval(test)
+                      process.exit()
+                      }
                   })
                 )
-                .then(response => {
-                    process.exit()
-                })
                 .catch(response=>{
                    if(err) throw err;
                 })
           })
-        }, 4000)
-      })
-    }
-  })
-
+        }, 1)
 
 
 app.use(function (err, req, res, next) {

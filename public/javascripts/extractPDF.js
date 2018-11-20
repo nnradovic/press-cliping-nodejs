@@ -17,6 +17,8 @@ const PDFDocument = require('pdfkit')
 
 // GET FROM COMANDLINE PARAMETER
 const args = process.argv.slice(2)
+console.log(process.argv.length);
+
 var file = args[2]
 
 function extractPDF(keywords1, company, today, id) {
