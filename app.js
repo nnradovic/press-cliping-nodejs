@@ -57,8 +57,8 @@ app.use(function (req, res, next) {
                 })
                 .then(function (response) {
                   if(data.length > 0){
-                      console.log(data);
-                      console.log("HTML was Send!!!");
+                      console.log(data[0].oldHtml + ',' + data[0].newHtml);
+                     
                       clearInterval(test)
                       process.exit()
                     }
