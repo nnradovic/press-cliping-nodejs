@@ -33,7 +33,7 @@ app.use(function (req, res, next) {
           let keywords= args.slice(5, process.argv.length)
           extractPDF.extractPDF(keywords, company, datestring, id)
 
-//WHEN EXTRACT HTML AFTER 4s WE START TO SEND HTML MERGED BACK TO PHP ------->>>>>>
+//WHEN EXTRACT HTML AFTER WE START TO SEND HTML MERGED BACK TO PHP ------->>>>>>
         var test = setInterval(function () {
           let htmlSingleArr = []
           let singleHTMLSource = path.join(__dirname, '/public/javascripts/modified')
@@ -54,13 +54,13 @@ app.use(function (req, res, next) {
                   }
                 })
                 .then(function (response) {
-                    console.log("HTML was Send!!!");
-                    if(data.length > 0){
+                  if(data.length > 0){
+                      console.log("HTML was Send!!!");
                       clearInterval(test)
                       process.exit()
-                      }
+                    }
                   })
-                )
+                  )
                 .catch(response=>{
                    if(err) throw err;
                 })
