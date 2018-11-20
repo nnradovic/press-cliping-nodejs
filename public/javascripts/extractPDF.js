@@ -41,7 +41,7 @@ function extractPDF(keywords1, company, today, id) {
 
 function extractA(source, keywords1, company, today, id) {
   if (typeof source != 'undefined') {
-    var sourcePDF = path.join('/var/www/html/gs/public/javascripts/source/'+ source);
+    var sourcePDF = path.join('/var/www/html/gs/public/javascripts/output/'+ source);
     var outputFolder = path.join(__dirname, '/output/');
     var keywords = keywords1 || [];
 
@@ -76,7 +76,7 @@ async function modify(keywords, today, company) {
   doc = new PDFDocument
  
   let source = []
-  var sourceFolder = path.join('/var/www/html/gs/public/javascripts/source/'+ source);
+  var sourceFolder = path.join('/var/www/html/gs/public/javascripts/output/'+ source);
 
   // GET FROM COMANDLINE PARAMETER
   source.push(file)
