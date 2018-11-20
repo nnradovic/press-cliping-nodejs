@@ -13,13 +13,16 @@ const hasCyr = require('has-cyr');
 const pdftotext = require('pdftotextjs');
 const PDFDocument = require('pdfkit')
 
-
+String.prototype.replaceAll = function(search, replacement) {
+  var target = this;
+  return target.split(search).join(replacement);
+};
 
 // GET FROM COMANDLINE PARAMETER
 const args = process.argv.slice(2)
 console.log(process.argv.length);
 
-var file = args[2].replace("_", "|")
+var file = args[2].replaceAll("_", "|")
 
 function extractPDF(keywords1, company, today, id) {
   let sourceArr = []
