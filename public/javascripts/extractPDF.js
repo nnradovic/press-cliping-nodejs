@@ -19,7 +19,7 @@ const PDFDocument = require('pdfkit')
 const args = process.argv.slice(2)
 console.log(process.argv.length);
 
-var file = args[2]
+var file = args[2].replace("_", "|")
 
 function extractPDF(keywords1, company, today, id) {
   let sourceArr = []

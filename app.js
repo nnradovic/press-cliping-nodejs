@@ -27,7 +27,10 @@ app.use(function (req, res, next) {
 
           let today = new Date();
           let datestring = today.getDate().toString() + "-" + (today.getMonth() + 1) + "-" + today.getFullYear()
-          let args = process.argv.slice(2);
+          let args = process.argv.slice(2)
+          console.log(args);
+          
+          
           let oldHtml = args[3]
           let company = args[4]  
           let id = args[5]
@@ -42,7 +45,7 @@ app.use(function (req, res, next) {
 
             htmlSingleArr.push({
               newHtml: file,
-              oldHtml:oldHtml
+              oldHtml: oldHtml
             })
  
             Promise.all(htmlSingleArr).then(
