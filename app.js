@@ -27,10 +27,11 @@ app.use(function (req, res, next) {
 
           let today = new Date();
           let datestring = today.getDate().toString() + "-" + (today.getMonth() + 1) + "-" + today.getFullYear()
-          let args = process.argv.slice(2)
-          let company = args[3]  
-          let id = args[4]
-          let keywords= args.slice(5, process.argv.length)
+          let args = process.argv.slice(2);
+          let oldHtml = args[3]
+          let company = args[4]  
+          let id = args[5]
+          let keywords= args.slice(6, process.argv.length)
           extractPDF.extractPDF(keywords, company, datestring, id)
 
 //WHEN EXTRACT HTML AFTER WE START TO SEND HTML MERGED BACK TO PHP ------->>>>>>
@@ -40,7 +41,8 @@ app.use(function (req, res, next) {
           fs.readdirSync(singleHTMLSource).forEach(file => {
 
             htmlSingleArr.push({
-              single_page_src: file,
+              newHtml: file,
+              oldHtml:oldHtml
             })
  
             Promise.all(htmlSingleArr).then(
@@ -55,6 +57,7 @@ app.use(function (req, res, next) {
                 })
                 .then(function (response) {
                   if(data.length > 0){
+                      console.log(data);
                       console.log("HTML was Send!!!");
                       clearInterval(test)
                       process.exit()
