@@ -102,7 +102,7 @@ async function takeText(single, keywords, sourceFolder) {
   let modified = path.join('/var/www/html/gs/public/javascripts/modified/'+ single +'-modified.html')
   let pdf = new pdftotext(inputFile);
   const data = pdf.getTextSync(); // returns buffer
-  let text = data.toString('utf8').toLowerCase(); // bilo je 'utf8'
+  let text = data.toString('utf8'); // bilo je 'utf8'
   return textObj = { text: text, link: modified, keywords: keywords }
 }
 
@@ -112,7 +112,7 @@ function writeHmtl(obj) {
     if (hasCyr(obj.text)) {
       word = convertToCyr(word)
     }
-    obj.text = obj.text.replace(new RegExp(word, 'g'), "<span style ='color:red'><b>" + word.toUpperCase() + "</b></span>")
+    obj.text = obj.text.replace(new RegExp(word, 'gi'), "<span style ='color:red'><b>" + word.toUpperCase() + "</b></span>")
   })
   fs.writeFile(obj.link, obj.text, function (err) {
     if (err) throw err;

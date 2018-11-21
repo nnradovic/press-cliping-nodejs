@@ -21,7 +21,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(function (req, res, next) {
   next(createError(404));
 });
-
+String.prototype.replaceAll = function(search, replacement) {
+  var target = this;
+  return target.split(search).join(replacement);
+};
 
 // GET FROM COMANDLINE COMPANY,ID AND KEYWORD <<<<<<-------------
 
@@ -31,7 +34,7 @@ app.use(function (req, res, next) {
           console.log(args);
           
           
-          let oldHtml = args[3]
+          let oldHtml = args[3].replaceAll("_", "|")
           let company = args[4]  
           let id = args[5]
           let keywords= args.slice(6, process.argv.length)
