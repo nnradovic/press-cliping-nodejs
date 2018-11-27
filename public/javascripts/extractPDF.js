@@ -1,3 +1,6 @@
+
+    
+
 var express = require('express');
 var fs = require('fs');
 var request = require('request');
@@ -13,16 +16,19 @@ const hasCyr = require('has-cyr');
 const pdftotext = require('pdftotextjs');
 const PDFDocument = require('pdfkit')
 
+var iconv = require('iconv-lite');
+
 String.prototype.replaceAll = function(search, replacement) {
   var target = this;
   return target.split(search).join(replacement);
 };
 
+
 // GET FROM COMANDLINE PARAMETER
 const args = process.argv.slice(2)
 console.log(process.argv.length);
 
-var file = args[2].replaceAll("_", "|")
+var file = args[2]
 
 function extractPDF(keywords1, company, today, id) {
   let sourceArr = []
@@ -44,7 +50,8 @@ function extractPDF(keywords1, company, today, id) {
 
 function extractA(source, keywords1, company, today, id) {
   if (typeof source != 'undefined') {
-    var sourcePDF = path.join('/var/www/html/gs/public/javascripts/output/'+ source);
+    var sourcePDF = path.join('/var/www/html/gs/public/javascripts/output/'+ source)
+    // var sourcePDF = path.join(__dirname, `/source/${source}`);
     var outputFolder = path.join(__dirname, '/output/');
     var keywords = keywords1 || [];
 
@@ -79,8 +86,8 @@ async function modify(keywords, today, company) {
   doc = new PDFDocument
  
   let source = []
+  // var sourceFolder = path.join(__dirname, '/source/');
   var sourceFolder = path.join('/var/www/html/gs/public/javascripts/output/'+ source);
-
   // GET FROM COMANDLINE PARAMETER
   source.push(file)
   let textArr = []
@@ -99,22 +106,31 @@ async function modify(keywords, today, company) {
 async function takeText(single, keywords, sourceFolder) {
   doc = new PDFDocument
   let inputFile = path.join(sourceFolder, single)
+  // let modified = __dirname + `/modified/${single}-modified.html`
   let modified = path.join('/var/www/html/gs/public/javascripts/modified/'+ single +'-modified.html')
   let pdf = new pdftotext(inputFile);
   const data = pdf.getTextSync(); // returns buffer
-  let text = data.toString('utf8'); // bilo je 'utf8'
-  return textObj = { text: text, link: modified, keywords: keywords }
+  let text =iconv.decode(data, 'utf8');
+ let encode = text.replaceAll("{", "š").replaceAll("[", "Š").replaceAll("~", "č").replaceAll("d`", "dž").replaceAll("D`", "Dž").replaceAll("}", "ć").replaceAll('`', 'ž').replaceAll(']','Ć').replaceAll('/','Đ').replaceAll('^','Č').replaceAll('@','Ž')
+   
+  
+  return textObj = { text: encode, link: modified, keywords: keywords }
 }
 
 function writeHmtl(obj) {
   let keyword = obj.keywords
+  
   keyword.forEach(word => {
+    
     if (hasCyr(obj.text)) {
       word = convertToCyr(word)
     }
     obj.text = obj.text.replace(new RegExp(word, 'gi'), "<span style ='color:red'><b>" + word.toUpperCase() + "</b></span>")
+    
   })
   fs.writeFile(obj.link, obj.text, function (err) {
+    console.log(obj.text);
+    
     if (err) throw err;
 
   }
